@@ -42,10 +42,10 @@ def convert_phoneset(word_list, translation_key):
 	return [translation_key.get(phone, phone) for phone in word_list]
 
 
-def phone_reduction(phones, reduction_key):
-	multi_character_tokenize(wo.strip(), multi_character_phones)
-	return [reduction_key.get(i, i) for i in phones
-				  if not i in phones_to_be_removed]
+#def phone_reduction(phones, reduction_key):
+#	multi_character_tokenize(wo.strip(), multi_character_phones)
+#	return [reduction_key.get(i, i) for i in phones
+#				  if not i in ]
 
 
 def extract_multi_character_phones(phoneset):
