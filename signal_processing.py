@@ -4,15 +4,17 @@ import librosa
 import scipy
 
 
-def change_sample_rate(wav_file_in, wav_file_out, sample_rate, std_out=True):
-    """ change the sample rate to the desired value."""
-    y, sample_rate_original = librosa.load(wav_file_in, sr=None)
-    y_, _ = librosa.load(wav_file_in, sr=sample_rate)
-    scipy.io.wavfile.write(wav_file_out, sample_rate, y_)
+## this function not only change the sampling rate, but also change the bit rate.
+## shouldn't be used.
+# def change_sample_rate(wav_file_in, wav_file_out, sample_rate, std_out=True):
+#     """ change the sample rate to the desired value."""
+#     y, sample_rate_original = librosa.load(wav_file_in, sr=None)
+#     y_, _ = librosa.load(wav_file_in, sr=sample_rate)
+#     scipy.io.wavfile.write(wav_file_out, sample_rate, y_)
         
-    if std_out:
-        print('sample rate of {0} is converted from {1}[Hz] to {2}[Hz].'.format(
-            os.path.basename(wav_file_out), sample_rate_original, sample_rate))
+#     if std_out:
+#         print('sample rate of {0} is converted from {1}[Hz] to {2}[Hz].'.format(
+#             os.path.basename(wav_file_out), sample_rate_original, sample_rate))
         
         
 def change_sample_bit_rate(wav_file_in, wav_file_out, sample_rate=22050, bit_rate=16, channel=1):
