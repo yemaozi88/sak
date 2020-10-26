@@ -1,4 +1,7 @@
 import os
+
+import librosa
+import scipy
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
@@ -20,6 +23,7 @@ def change_sample_rate(wav_file_in, wav_file_out, sample_rate, std_out=True):
             os.path.basename(wav_file_out), sample_rate_original, sample_rate))
         
         
-def change_sample_bit_rate(wav_file_in, wav_file_out, sample_rate=16000, bit_rate=16):
-    command = 'sox ' + wav_file_in + ' -r ' + str(sample_rate) + ' -b ' + str(bit_rate) + ' ' + wav_file_out
+def change_sample_bit_rate(wav_file_in, wav_file_out, sample_rate=22050, bit_rate=16, channel=1):
+    ''' default setting is for waveglow_vocoder '''
+    command = 'sox ' + wav_file_in + ' -r ' + str(sample_rate) + ' -b ' + str(bit_rate) + ' -c ' + str(channel) + ' ' + wav_file_out
     os.system(command)
