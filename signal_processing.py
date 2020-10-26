@@ -2,14 +2,6 @@ import os
 
 import librosa
 import scipy
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-
-def display_spectrogram(x, png_file=None):
-    axarr = plt.subplot()
-    axarr.imshow(x, aspect='auto', origin='lower', interpolation='nearest', cmap=cm.viridis)
-    if not png_file == None:
-        plt.savefig(png_file)
 
 
 def change_sample_rate(wav_file_in, wav_file_out, sample_rate, std_out=True):
