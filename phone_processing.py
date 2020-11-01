@@ -26,11 +26,11 @@ def split_word(word, phoneset):
 	Returns:
 		(word_seperated) (list): the word splitted in given phoneset. 
 
+	TODO: 
+		this function does not work yet. 
 	"""
 	multi_character_phones = extract_multi_character_phones(phoneset)
-	return [phone 
-		 for phone in multi_character_tokenize(word.strip(), multi_character_phones)
-		 ]
+	return [phone for phone in multi_character_tokenize(word.strip(), multi_character_phones)]
 
 
 def convert_phoneset(word_list, translation_key):
