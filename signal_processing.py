@@ -29,21 +29,21 @@ def change_sample_bit_rate(wav_in_path, wav_out_path, sample_rate=22050, bit_rat
 
 def trim_silB_silE(wav_in_path, wav_out_path, duration_threshold=1, volume_threshold=0.1):
     '''
-        trim silB (silence - begin) and silE (silence - end)
-    
-        Args:
-            wav_in_path: wav file to be trimmed.
+    trim silB (silence - begin) and silE (silence - end)
+
+    Args:
+        wav_in_path: wav file to be trimmed.
+        
+        wav_out_path: wav file which is trimmed.
+        
+        duration_threshold: trim silence (anything less than {volume_threshold}%) 
+            until we encounter sound lasting more than {duration_threshold} seconds in duration. 
+            default value = 1
             
-            wav_out_path: wav file which is trimmed.
-            
-            duration_threshold: trim silence (anything less than {volume_threshold}%) 
-                until we encounter sound lasting more than {duration_threshold} seconds in duration. 
-                default value = 1
-                
-            volume_threshold: used to indicate what sample value you should treat as silence. 
-                For digital audio, a value of 0 may be fine but for audio recorded from analog, 
-                you may wish to increase the value to account for background noise.
-                default value = 0.1
+        volume_threshold: used to indicate what sample value you should treat as silence. 
+            For digital audio, a value of 0 may be fine but for audio recorded from analog, 
+            you may wish to increase the value to account for background noise.
+            default value = 0.1
                 
     '''
     command = ('sox ' + wav_in_path + ' ' + wav_out_path
@@ -52,4 +52,29 @@ def trim_silB_silE(wav_in_path, wav_out_path, duration_threshold=1, volume_thres
                 + '% reverse silence 1 '
                 + str(duration_threshold) + ' ' + str(volume_threshold) 
                 + '% reverse')
+    os.system(command)
+
+
+def trim_silB(wav_in_path, wav_out_path, duration_threshold=1, volume_threshold=0.1):
+    '''
+    trim silB.
+
+    Args:
+        wav_in_path: wav file to be trimmed.
+        
+        wav_out_path: wav file which is trimmed.
+        
+        duration_threshold: trim silence (anything less than {volume_threshold}%) 
+            until we encounter sound lasting more than {duration_threshold} seconds in duration. 
+            default value = 1
+            
+        volume_threshold: used to indicate what sample value you should treat as silence. 
+            For digital audio, a value of 0 may be fine but for audio recorded from analog, 
+            you may wish to increase the value to account for background noise.
+            default value = 0.1
+                
+    '''
+    command = ('sox ' + wav_in_path + ' ' + wav_out_path
+                + ' silence 1 '
+                + str(duration_threshold) + ' ' + str(volume_threshold))
     os.system(command)
