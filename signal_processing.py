@@ -17,24 +17,24 @@ import scipy
 #             os.path.basename(wav_file_out), sample_rate_original, sample_rate))
         
         
-def change_sample_bit_rate(wav_path_in, wav_path_out, sample_rate=22050, bit_rate=16, channel=1):
+def change_sample_bit_rate(wav_in_path, wav_out_path, sample_rate=22050, bit_rate=16, channel=1):
     ''' default setting is for waveglow_vocoder '''
-    command = ('sox ' + wav_path_in 
+    command = ('sox ' + wav_in_path 
                 + ' -r ' + str(sample_rate) 
                 + ' -b ' + str(bit_rate) 
                 + ' -c ' + str(channel) 
-                + ' ' + wav_path_out)
+                + ' ' + wav_out_path)
     os.system(command)
 
 
-def trim_silB_silE(wav_path_in, wav_path_out, duration_threshold=1, volume_threshold=0.1):
+def trim_silB_silE(wav_in_path, wav_out_path, duration_threshold=1, volume_threshold=0.1):
     '''
         trim silB (silence - begin) and silE (silence - end)
     
         Args:
-            wav_path_in: wav file to be trimmed.
+            wav_in_path: wav file to be trimmed.
             
-            wav_path_out: wav file which is trimmed.
+            wav_out_path: wav file which is trimmed.
             
             duration_threshold: trim silence (anything less than {volume_threshold}%) 
                 until we encounter sound lasting more than {duration_threshold} seconds in duration. 
@@ -46,7 +46,7 @@ def trim_silB_silE(wav_path_in, wav_path_out, duration_threshold=1, volume_thres
                 default value = 0.1
                 
     '''
-    command = ('sox ' + wav_path_in + ' ' + wav_path_out
+    command = ('sox ' + wav_in_path + ' ' + wav_out_path
                 + ' silence 1 '
                 + str(duration_threshold) + ' ' + str(volume_threshold)
                 + '% reverse silence 1 '
