@@ -14,9 +14,9 @@ def disp_wav(wav_file, sampling_rate=22050, offset=None, duration=None):
     '''
     assert os.path.exists(wav_file), '{} does not exist.'.format(wav_file)
     if (offset == None) and (duration == None):
-        y, _ = librosa.load(wav_file)
+        y, _ = librosa.load(wav_file, sr=sampling_rate)
     else:
-        y, _ = librosa.load(wav_file, offset=offset, duration=duration)
+        y, _ = librosa.load(wav_file, sr=sampling_rate, offset=offset, duration=duration)
     IPython.display.display(Audio(y, rate=sampling_rate))
 
 

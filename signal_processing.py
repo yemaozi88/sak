@@ -27,9 +27,9 @@ def change_sample_bit_rate(wav_in_path, wav_out_path, sample_rate=22050, bit_rat
     os.system(command)
 
 
-def trim_silB_silE(wav_in_path, wav_out_path, duration_threshold=1, volume_threshold=0.1):
+def trim_silB_silE_sox(wav_in_path, wav_out_path, duration_threshold=1, volume_threshold=0.1):
     '''
-    trim silB (silence - begin) and silE (silence - end)
+    trim silB (silence - begin) and silE (silence - end) using sox
 
     Args:
         wav_in_path: wav file to be trimmed.
@@ -55,26 +55,42 @@ def trim_silB_silE(wav_in_path, wav_out_path, duration_threshold=1, volume_thres
     os.system(command)
 
 
-def trim_silB(wav_in_path, wav_out_path, duration_threshold=1, volume_threshold=0.1):
+def get_silB_silE(lab_path):
     '''
-    trim silB.
+    lab_path: htk formatted label file.
+    '''
+    unit = 10 ** 7 # 100 ns = 100 x 10^(-9) = 10^(-7)
+    with open(lab_path) as f:
+        lines = f.read().split('\n')
+    lines = [line.split() for line in lines if len(line.split()) == 3]
 
-    Args:
-        wav_in_path: wav file to be trimmed.
-        
-        wav_out_path: wav file which is trimmed.
-        
-        duration_threshold: trim silence (anything less than {volume_threshold}%) 
-            until we encounter sound lasting more than {duration_threshold} seconds in duration. 
-            default value = 1
-            
-        volume_threshold: used to indicate what sample value you should treat as silence. 
-            For digital audio, a value of 0 may be fine but for audio recorded from analog, 
-            you may wish to increase the value to account for background noise.
-            default value = 0.1
-                
-    '''
+    # get the length of silB.
+    pau = []
+    for line in lines:
+        if line[2] == 'pau':
+            pau.append(line)
+            break
+    silB = [int(pau[0][0])/unit, 
+            int(pau[-1][1])/unit]
+
+    pau = []
+    for line in reversed(lines):
+        if line[2] == 'pau':
+            pau.append(line)
+            break
+    silE = [int(pau[-1][0])/unit, 
+            int(pau[0][1])/unit]
+    
+    return silB, silE
+
+
+def trim_silB_silE_lab(wav_in_path, wav_out_path, lab_path):
+    silB, silE = get_silB_silE(lab_path)
+    trim_start = silB[1]
+    trim_duration = silE[0] - silB[1]
+    #sox {wav_in_path} {wav_out_path} trim {trim_start} {trim_duration}
     command = ('sox ' + wav_in_path + ' ' + wav_out_path
-                + ' silence 1 '
-                + str(duration_threshold) + ' ' + str(volume_threshold))
+                + ' trim '
+                + str(trim_start) + ' ' + str(trim_duration)
+                )
     os.system(command)
