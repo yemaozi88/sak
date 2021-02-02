@@ -2,6 +2,7 @@ import os
 
 import librosa
 import scipy
+import numpy as np
 
 
 ## this function not only change the sampling rate, but also change the bit rate.
@@ -94,3 +95,26 @@ def trim_silB_silE_lab(wav_in_path, wav_out_path, lab_path):
                 + str(trim_start) + ' ' + str(trim_duration)
                 )
     os.system(command)
+
+
+def load_wav(wav_path, sampling_rate=44100):
+    signal, _ = librosa.load(wav_path, sr=sampling_rate)
+    return signal
+
+
+def get_rms(signal):
+    rms = librosa.feature.rms(signal)
+    return rms.T
+
+
+def normalize_rms(signal, rms_target=0.02):
+    rms = get_rms(signal)
+    rms_mean = np.mean(rms[np.nonzero(rms)])
+    a = rms_target / rms_mean
+    return signal * a
+
+
+def normalize_rms_file(wav_in_path, wav_out_path, rms_target=0.02, sampling_frequency=44100):
+    wav_in  = load_wav(wav_in_path)
+    wav_out = normalize_rms(wav_in, rms_target)
+    librosa.output.write_wav(wav_out_path, wav_out, sampling_frequency)
