@@ -56,7 +56,7 @@ def trim_silB_silE_sox(wav_in_path, wav_out_path, duration_threshold=1, volume_t
     os.system(command)
 
 
-def get_silB_silE(lab_path):
+def calc_silB_silE(lab_path):
     '''
     lab_path: htk formatted label file.
     '''
@@ -86,7 +86,7 @@ def get_silB_silE(lab_path):
 
 
 def trim_silB_silE_lab(wav_in_path, wav_out_path, lab_path):
-    silB, silE = get_silB_silE(lab_path)
+    silB, silE = calc_silB_silE(lab_path)
     trim_start = silB[1]
     trim_duration = silE[0] - silB[1]
     #sox {wav_in_path} {wav_out_path} trim {trim_start} {trim_duration}
@@ -102,13 +102,26 @@ def load_wav(wav_path, sampling_rate=44100):
     return signal
 
 
-def get_rms(signal):
-    rms = librosa.feature.rms(signal)
+def calc_rms(signal, frame_length=2048, hop_length=512, center=True):
+    rms = librosa.feature.rms(
+        signal, 
+        frame_length=frame_length, 
+        hop_length=hop_length, 
+        center=True)
     return rms.T
 
 
+def calc_zero_crossings(signal, frame_length=2048, hop_length=512, center=True):
+    zero_crossings = librosa.feature.zero_crossing_rate(
+        signal, 
+        frame_length=frame_length, 
+        hop_length=hop_length, 
+        center=True)
+    return zero_crossings.T
+
+
 def normalize_rms(signal, rms_target=0.02):
-    rms = get_rms(signal)
+    rms = calc_rms(signal)
     rms_mean = np.mean(rms[np.nonzero(rms)])
     a = rms_target / rms_mean
     return signal * a
