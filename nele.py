@@ -79,7 +79,12 @@ def create_noise_mask(wav_clean_path, wav_noise_path, wav_noise_mask_path, sampl
     librosa.output.write_wav(wav_noise_mask_path, noise_mask, sampling_frequency)
 
 
-def add_noise2(wav_clean_path, wav_noise_path, wav_mixed_path, snr=0, sampling_frequency=44100):
+def add_noise2(
+    wav_clean_path, 
+    wav_noise_path, 
+    wav_mixed_path, 
+    wav_noise_out_path=None, 
+    snr=0, sampling_frequency=44100):
     '''
     re-implement add noise function using librosa and sak. 
     '''
@@ -98,7 +103,7 @@ def add_noise2(wav_clean_path, wav_noise_path, wav_mixed_path, snr=0, sampling_f
             temp_file.name, 
             sampling_frequency=sampling_frequency)
         signal_noise = sp.load_wav(temp_file.name)
-        os.path.remove(temp_file.name)
+        os.remove(temp_file.name)
 
     # calculate average rms. 
     rms_clean = np.mean(sp.calc_rms(signal_clean))
@@ -109,7 +114,10 @@ def add_noise2(wav_clean_path, wav_noise_path, wav_mixed_path, snr=0, sampling_f
     rms_noise_desired = rms_clean / (10**a)
 
     # adjust rms of noise and add to signal_clean.
-    signal_mixed = signal_clean + signal_noise * rms_noise_desired / rms_noise
+    signal_noise_desired = signal_noise * rms_noise_desired / rms_noise
+    signal_mixed = signal_clean + signal_noise_desired
 
     # output the signal.
     librosa.output.write_wav(wav_mixed_path, signal_mixed, sampling_frequency)
+    if not wav_noise_out_path==None:
+        librosa.output.write_wav(wav_noise_out_path, signal_noise_desired, sampling_frequency)
