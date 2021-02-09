@@ -7,7 +7,7 @@ import tempfile
 
 import numpy as np
 import librosa
-
+from pystoi import stoi
 from . import signal_processing as sp
 
 
@@ -121,3 +121,14 @@ def add_noise2(
     librosa.output.write_wav(wav_mixed_path, signal_mixed, sampling_frequency)
     if not wav_noise_out_path==None:
         librosa.output.write_wav(wav_noise_out_path, signal_noise_desired, sampling_frequency)
+
+
+def calc_stoi(wav_clean_path, wav_mixed_path, sampling_frequency=44100):
+    # load signal from wav files.
+    signal_clean = sp.load_wav(wav_clean_path)
+    signal_mixed = sp.load_wav(wav_mixed_path)
+    # calculate stoi
+    wav_intelligibility = stoi(signal_clean, signal_mixed, sampling_frequency, extended=False)
+
+    return wav_intelligibility
+
