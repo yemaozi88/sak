@@ -8,6 +8,7 @@ import tempfile
 import numpy as np
 import librosa
 from pystoi import stoi
+from pysiib import SIIB
 from . import signal_processing as sp
 
 
@@ -123,12 +124,33 @@ def add_noise2(
         librosa.output.write_wav(wav_noise_out_path, signal_noise_desired, sampling_frequency)
 
 
-def calc_stoi(wav_clean_path, wav_mixed_path, sampling_frequency=44100):
+def calc_stoi_file(wav_clean_path, wav_mixed_path, sampling_frequency=44100):
     # load signal from wav files.
     signal_clean = sp.load_wav(wav_clean_path)
     signal_mixed = sp.load_wav(wav_mixed_path)
+    
     # calculate stoi
-    wav_intelligibility = stoi(signal_clean, signal_mixed, sampling_frequency, extended=False)
+    stoi_score = stoi(signal_clean, signal_mixed, sampling_frequency, extended=False)
 
-    return wav_intelligibility
+    return stoi_score
 
+
+def calc_siib_file(wav_clean_path, wav_mixed_path, sampling_frequency=44100):
+    '''
+    Optional Parameters:
+        gauss (bool): Use SIIB^Gauss.
+        use_MI_Kraskov (bool): Use C-implementation for SIIB calculation.
+            This is not valid for SIIB^Gauss mode.
+        window_length (float):
+        window_shift (float):
+        window (str):
+        delta_dB (float)): VAD threshold
+    '''
+    # load signal from wav files.
+    signal_clean = sp.load_wav(wav_clean_path)
+    signal_mixed = sp.load_wav(wav_mixed_path)
+
+    # calculate SIIB
+    siib_score = SIIB(signal_clean, signal_mixed, sampling_frequency)
+
+    return siib_score
