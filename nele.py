@@ -151,6 +151,6 @@ def calc_siib_file(wav_clean_path, wav_mixed_path, sampling_frequency=44100):
     signal_mixed = sp.load_wav(wav_mixed_path)
 
     # calculate SIIB
-    siib_score = SIIB(signal_clean, signal_mixed, sampling_frequency)
+    siib_score = SIIB(signal_clean, signal_mixed, sampling_frequency, gauss=True)
 
     return siib_score
