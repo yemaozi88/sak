@@ -66,7 +66,14 @@ def add_noise(wav_clean_path, wav_noise_path, wav_mix_path, snr=0):
     noisy_wave.close()
 
 
-def create_noise_mask(wav_clean_path, wav_noise_path, wav_noise_mask_path, sampling_frequency=44100):
+def create_noise_mask(
+    wav_clean_path, wav_noise_path, wav_noise_mask_path, 
+    sampling_frequency=44100, randomize=True):
+    '''
+    Args:
+        randomize (binary): if the start position of the input should be randomized.
+    '''
+
     # load signal from wav files.
     wav_clean = sp.load_wav(wav_clean_path)
     wav_noise = sp.load_wav(wav_noise_path)
@@ -74,7 +81,10 @@ def create_noise_mask(wav_clean_path, wav_noise_path, wav_noise_mask_path, sampl
     # triple the length of noise file.
     wav_noise3 = np.r_[wav_noise, wav_noise, wav_noise]
  
-    mask_start = random.choice(np.arange(len(wav_noise)))
+    if randomize:
+        mask_start = random.choice(np.arange(len(wav_noise)))
+    else:
+        mask_start = 100000
     noise_mask = wav_noise3[mask_start:mask_start+len(wav_clean)]
 
     librosa.output.write_wav(wav_noise_mask_path, noise_mask, sampling_frequency)
@@ -85,7 +95,9 @@ def add_noise2(
     wav_noise_path, 
     wav_mixed_path, 
     wav_noise_out_path=None, 
-    snr=0, sampling_frequency=44100):
+    snr=0, 
+    sampling_frequency=44100, 
+    randomize=True):
     '''
     re-implement add noise function using librosa and sak. 
     '''
@@ -102,7 +114,7 @@ def add_noise2(
             wav_clean_path, 
             wav_noise_path, 
             temp_file.name, 
-            sampling_frequency=sampling_frequency)
+            sampling_frequency=sampling_frequency, randomize=randomize)
         signal_noise = sp.load_wav(temp_file.name)
         os.remove(temp_file.name)
 
