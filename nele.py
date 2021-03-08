@@ -84,7 +84,8 @@ def create_noise_mask(
     if randomize:
         mask_start = random.choice(np.arange(len(wav_noise)))
     else:
-        mask_start = 100000
+        #mask_start = 100000
+        mask_start = 0
     noise_mask = wav_noise3[mask_start:mask_start+len(wav_clean)]
 
     librosa.output.write_wav(wav_noise_mask_path, noise_mask, sampling_frequency)
