@@ -7,6 +7,7 @@ import tempfile
 
 import numpy as np
 import librosa
+import soundfile as sf
 from pystoi import stoi
 from pysiib import SIIB
 from . import signal_processing as sp
@@ -88,8 +89,8 @@ def create_noise_mask(
         mask_start = 0
     noise_mask = wav_noise3[mask_start:mask_start+len(wav_clean)]
 
-    librosa.output.write_wav(wav_noise_mask_path, noise_mask, sampling_frequency)
-
+    #librosa.output.write_wav(wav_noise_mask_path, noise_mask, sampling_frequency)
+    sf.write(wav_noise_mask_path, noise_mask, sampling_frequency)
 
 def add_noise2(
     wav_clean_path, 
@@ -109,7 +110,7 @@ def add_noise2(
     # if the length of signal and noise does not match
     # make noise mask.
     if not len(signal_noise) == len(signal_clean):
-        temp_file = tempfile.NamedTemporaryFile(delete=False)
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
         temp_file.close()
         create_noise_mask(
             wav_clean_path, 
@@ -132,10 +133,11 @@ def add_noise2(
     signal_mixed = signal_clean + signal_noise_desired
 
     # output the signal.
-    librosa.output.write_wav(wav_mixed_path, signal_mixed, sampling_frequency)
+    #librosa.output.write_wav(wav_mixed_path, signal_mixed, sampling_frequency)
+    sf.write(wav_mixed_path, signal_mixed, sampling_frequency)
     if not wav_noise_out_path==None:
-        librosa.output.write_wav(wav_noise_out_path, signal_noise_desired, sampling_frequency)
-
+        #librosa.output.write_wav(wav_noise_out_path, signal_noise_desired, sampling_frequency)
+        sf.write(wav_noise_out_path, signal_noise_desired, sampling_frequency)
 
 def calc_stoi_file(wav_clean_path, wav_mixed_path, sampling_frequency=44100):
     # load signal from wav files.

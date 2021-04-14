@@ -1,6 +1,7 @@
 import os
 
 import librosa
+import soundfile as sf
 import scipy
 import numpy as np
 
@@ -130,4 +131,7 @@ def normalize_rms(signal, rms_target=0.02):
 def normalize_rms_file(wav_in_path, wav_out_path, rms_target=0.02, sampling_frequency=44100):
     wav_in  = load_wav(wav_in_path)
     wav_out = normalize_rms(wav_in, rms_target)
-    librosa.output.write_wav(wav_out_path, wav_out, sampling_frequency)
+
+    #maxv = np.iinfo(np.int16).max
+    #librosa.output.write_wav(wav_out_path, wav_out.astype(np.int16), sampling_frequency)
+    sf.write(wav_out_path, wav_out, sampling_frequency)
