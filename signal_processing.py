@@ -103,6 +103,10 @@ def load_wav(wav_path, sampling_rate=44100):
     return signal
 
 
+def get_length(wav_path):
+    return librosa.get_duration(filename=wav_path)
+
+
 def calc_rms(signal, frame_length=2048, hop_length=512, center=True):
     rms = librosa.feature.rms(
         signal, 
