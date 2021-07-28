@@ -2,3 +2,5 @@ librosa
 matplotlib
 praat-textgrids
 pandas
+## libsndfile==1.0.26 has a bug: https://www.programmersought.com/article/31733200971/
+# conda install -c conda-forge libsndfile==1.0.27
