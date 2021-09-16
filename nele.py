@@ -35,8 +35,10 @@ def calc_adjusted_rms(clean_rms, snr=0):
 # A series of processes in one
 def add_noise(wav_clean_path, wav_noise_path, wav_mix_path, snr=0):
     # open wav file
-    clean_wav = wave.open(wav_clean_path, "r")
-    noise_wav = wave.open(wav_noise_path, "r")
+    #clean_wav = wave.open(wav_clean_path, "r")
+    clean_wav = sp.load_wav(wav_clean_path)
+    #noise_wav = wave.open(wav_noise_path, "r")
+    noise_wav = sp.load_wav(wav_noise_path)
                     
     # Calculation of amp
     clean_amp = calc_amp(clean_wav)

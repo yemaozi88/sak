@@ -108,7 +108,7 @@ def get_length(wav_path):
 
 
 def calc_rms(signal, frame_length=2048, hop_length=512, center=True):
-    rms = librosa.feature.rms(
+    rms = librosa.feature.rmse(
         signal, 
         frame_length=frame_length, 
         hop_length=hop_length, 
@@ -139,3 +139,33 @@ def normalize_rms_file(wav_in_path, wav_out_path, rms_target=0.02, sampling_freq
     #maxv = np.iinfo(np.int16).max
     #librosa.output.write_wav(wav_out_path, wav_out.astype(np.int16), sampling_frequency)
     sf.write(wav_out_path, wav_out, sampling_frequency)
+    
+    
+def repeat_wav_file(wav_in_path, wav_out_path, t_max, sampling_rate=22050, cut=True):
+    ''' 
+    repeat the wav file until the given duration.
+    
+        Args:
+            wav_in_path (path): original wav file.
+            wav_out_path (path): wav file to be written.
+            t_max (int): until how many seconds wav should be repeated.
+            sampling_rate: sampling_frequency of the wav_in_path. 
+            cut (boolian): if the wav file should be cut exactly at t_max[sec].
+    '''
+    # load the wav file.
+    y, _ = librosa.load(wav_in_path, sr=sampling_rate)
+
+    # wav duration.
+    d = len(y) / sampling_rate
+    # how many samples should be in t_max [sec]
+    y_max = t_max * sampling_rate
+    # how many times should the audio file be repeated.
+    n = int(np.ceil(t_max / d))
+
+    # repeated audio.
+    yy = np.tile(y, n)
+
+    if cut:
+        yy = yy[:y_max]
+    
+    sf.write(wav_out_path, yy, sampling_rate)
