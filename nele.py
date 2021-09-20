@@ -71,15 +71,15 @@ def add_noise(wav_clean_path, wav_noise_path, wav_mix_path, snr=0):
 
 def create_noise_mask(
     wav_clean_path, wav_noise_path, wav_noise_mask_path, 
-    sampling_frequency=44100, randomize=True):
+    sampling_rate=44100, randomize=True):
     '''
     Args:
         randomize (binary): if the start position of the input should be randomized.
     '''
 
     # load signal from wav files.
-    wav_clean = sp.load_wav(wav_clean_path)
-    wav_noise = sp.load_wav(wav_noise_path)
+    wav_clean = sp.load_wav(wav_clean_path, sampling_rate=sampling_rate)
+    wav_noise = sp.load_wav(wav_noise_path, sampling_rate=sampling_rate)
 
     # triple the length of noise file.
     wav_noise3 = np.r_[wav_noise, wav_noise, wav_noise]
@@ -91,8 +91,8 @@ def create_noise_mask(
         mask_start = 0
     noise_mask = wav_noise3[mask_start:mask_start+len(wav_clean)]
 
-    #librosa.output.write_wav(wav_noise_mask_path, noise_mask, sampling_frequency)
-    sf.write(wav_noise_mask_path, noise_mask, sampling_frequency)
+    #librosa.output.write_wav(wav_noise_mask_path, noise_mask, sampling_rate)
+    sf.write(wav_noise_mask_path, noise_mask, sampling_rate)
 
 def add_noise2(
     wav_clean_path, 
@@ -100,14 +100,14 @@ def add_noise2(
     wav_mixed_path, 
     wav_noise_out_path=None, 
     snr=0, 
-    sampling_frequency=44100, 
+    sampling_rate=44100, 
     randomize=True):
     '''
     re-implement add noise function using librosa and sak. 
     '''
     # load signal from wav files.
-    signal_clean = sp.load_wav(wav_clean_path)
-    signal_noise = sp.load_wav(wav_noise_path)
+    signal_clean = sp.load_wav(wav_clean_path, sampling_rate=sampling_rate)
+    signal_noise = sp.load_wav(wav_noise_path, sampling_rate=sampling_rate)
 
     # if the length of signal and noise does not match
     # make noise mask.
@@ -118,7 +118,7 @@ def add_noise2(
             wav_clean_path, 
             wav_noise_path, 
             temp_file.name, 
-            sampling_frequency=sampling_frequency, randomize=randomize)
+            sampling_rate=sampling_rate, randomize=randomize)
         signal_noise = sp.load_wav(temp_file.name)
         os.remove(temp_file.name)
 
@@ -135,24 +135,25 @@ def add_noise2(
     signal_mixed = signal_clean + signal_noise_desired
 
     # output the signal.
-    #librosa.output.write_wav(wav_mixed_path, signal_mixed, sampling_frequency)
-    sf.write(wav_mixed_path, signal_mixed, sampling_frequency)
+    #librosa.output.write_wav(wav_mixed_path, signal_mixed, sampling_rate)
+    sf.write(wav_mixed_path, signal_mixed, sampling_rate)
     if not wav_noise_out_path==None:
-        #librosa.output.write_wav(wav_noise_out_path, signal_noise_desired, sampling_frequency)
-        sf.write(wav_noise_out_path, signal_noise_desired, sampling_frequency)
+        #librosa.output.write_wav(wav_noise_out_path, signal_noise_desired, sampling_rate)
+        sf.write(wav_noise_out_path, signal_noise_desired, sampling_rate)
 
-def calc_stoi_file(wav_clean_path, wav_mixed_path, sampling_frequency=44100):
+
+def calc_stoi_file(wav_clean_path, wav_mixed_path, sampling_rate=44100):
     # load signal from wav files.
     signal_clean = sp.load_wav(wav_clean_path)
     signal_mixed = sp.load_wav(wav_mixed_path)
     
     # calculate stoi
-    stoi_score = stoi(signal_clean, signal_mixed, sampling_frequency, extended=False)
+    stoi_score = stoi(signal_clean, signal_mixed, sampling_rate, extended=False)
 
     return stoi_score
 
 
-def calc_siib_file(wav_clean_path, wav_mixed_path, sampling_frequency=44100):
+def calc_siib_file(wav_clean_path, wav_mixed_path, sampling_rate=44100):
     '''
     Optional Parameters:
         gauss (bool): Use SIIB^Gauss.
@@ -168,6 +169,6 @@ def calc_siib_file(wav_clean_path, wav_mixed_path, sampling_frequency=44100):
     signal_mixed = sp.load_wav(wav_mixed_path)
 
     # calculate SIIB
-    siib_score = SIIB(signal_clean, signal_mixed, sampling_frequency, gauss=True)
+    siib_score = SIIB(signal_clean, signal_mixed, sampling_rate, gauss=True)
 
     return siib_score

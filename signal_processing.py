@@ -1,10 +1,11 @@
 import os
+import glob
 
 import librosa
 import soundfile as sf
 import scipy
 import numpy as np
-
+from tqdm import tqdm
 
 ## this function not only change the sampling rate, but also change the bit rate.
 ## shouldn't be used.
@@ -19,14 +20,28 @@ import numpy as np
 #             os.path.basename(wav_file_out), sample_rate_original, sample_rate))
         
         
-def change_sample_bit_rate(wav_in_path, wav_out_path, sample_rate=22050, bit_rate=16, channel=1):
+def change_sample_bit_rate(wav_in_path, wav_out_path, sampling_rate=22050, bit_rate=16, channel=1):
     ''' default setting is for waveglow_vocoder '''
     command = ('sox ' + wav_in_path 
-                + ' -r ' + str(sample_rate) 
+                + ' -r ' + str(sampling_rate) 
                 + ' -b ' + str(bit_rate) 
                 + ' -c ' + str(channel) 
                 + ' ' + wav_out_path)
     os.system(command)
+    
+
+def change_sample_bit_rate_dir(wav_in_dir, wav_out_dir, sampling_rate=16000, bit_rate=16, channel=1):
+    wav_in_paths = glob.glob(os.path.join(wav_in_dir, '*.wav'))
+    wav_in_paths.sort()
+
+    for i in tqdm(range(len(wav_in_paths))):
+        wav_in_path = wav_in_paths[i]
+        wav_basename = os.path.basename(wav_in_path)
+        
+        change_sample_bit_rate(
+            wav_in_path, 
+            os.path.join(wav_out_dir, wav_basename), 
+            sampling_rate=sampling_rate)
 
 
 def trim_silB_silE_sox(wav_in_path, wav_out_path, duration_threshold=1, volume_threshold=0.1):
