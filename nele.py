@@ -33,12 +33,12 @@ def calc_adjusted_rms(clean_rms, snr=0):
 
 
 # A series of processes in one
-def add_noise(wav_clean_path, wav_noise_path, wav_mix_path, snr=0):
+def add_noise(wav_clean_path, wav_noise_path, wav_mix_path, sampling_rate=44100, snr=0):
     # open wav file
     #clean_wav = wave.open(wav_clean_path, "r")
-    clean_wav = sp.load_wav(wav_clean_path)
+    clean_wav = sp.load_wav(wav_clean_path, sampling_rate=sampling_rate)
     #noise_wav = wave.open(wav_noise_path, "r")
-    noise_wav = sp.load_wav(wav_noise_path)
+    noise_wav = sp.load_wav(wav_noise_path, sampling_rate=sampling_rate)
                     
     # Calculation of amp
     clean_amp = calc_amp(clean_wav)
@@ -119,7 +119,7 @@ def add_noise2(
             wav_noise_path, 
             temp_file.name, 
             sampling_rate=sampling_rate, randomize=randomize)
-        signal_noise = sp.load_wav(temp_file.name)
+        signal_noise = sp.load_wav(temp_file.name, sampling_rate=sampling_rate)
         os.remove(temp_file.name)
 
     # calculate average rms. 
@@ -144,8 +144,8 @@ def add_noise2(
 
 def calc_stoi_file(wav_clean_path, wav_mixed_path, sampling_rate=44100):
     # load signal from wav files.
-    signal_clean = sp.load_wav(wav_clean_path)
-    signal_mixed = sp.load_wav(wav_mixed_path)
+    signal_clean = sp.load_wav(wav_clean_path, sampling_rate)
+    signal_mixed = sp.load_wav(wav_mixed_path, sampling_rate)
     
     # calculate stoi
     stoi_score = stoi(signal_clean, signal_mixed, sampling_rate, extended=False)
@@ -165,8 +165,8 @@ def calc_siib_file(wav_clean_path, wav_mixed_path, sampling_rate=44100):
         delta_dB (float)): VAD threshold
     '''
     # load signal from wav files.
-    signal_clean = sp.load_wav(wav_clean_path)
-    signal_mixed = sp.load_wav(wav_mixed_path)
+    signal_clean = sp.load_wav(wav_clean_path, sampling_rate=sampling_rate)
+    signal_mixed = sp.load_wav(wav_mixed_path, sampling_rate=sampling_rate)
 
     # calculate SIIB
     siib_score = SIIB(signal_clean, signal_mixed, sampling_rate, gauss=True)
